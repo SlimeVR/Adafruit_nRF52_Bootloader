@@ -54,8 +54,8 @@
 // USB
 //--------------------------------------------------------------------+
 #define USB_DESC_VID           0x1209
-#define USB_DESC_UF2_PID       0x7690 // reusing SlimeNRF Receiver PID
-#define USB_DESC_CDC_ONLY_PID  0x7690
+#define USB_DESC_UF2_PID       0x7691
+#define USB_DESC_CDC_ONLY_PID  0x7691
 
 #define UF2_PRODUCT_NAME  "SlimeVR SlimeNRF Receiver eteeDongle"
 #define UF2_VOLUME_LABEL  "SLIMENRFRCV"

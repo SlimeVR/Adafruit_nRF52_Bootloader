@@ -53,8 +53,8 @@
 // USB
 //--------------------------------------------------------------------+
 #define USB_DESC_VID           0x1209
-#define USB_DESC_UF2_PID       0x7690 // TODO change later
-#define USB_DESC_CDC_ONLY_PID  0x7690 // TODO change later
+#define USB_DESC_UF2_PID       0x7693
+#define USB_DESC_CDC_ONLY_PID  0x7693
 
 //------------- UF2 -------------//
 #define UF2_PRODUCT_NAME      "SlimeVR NRF Mini P1"
