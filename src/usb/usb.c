@@ -104,6 +104,16 @@ void usb_init(bool cdc_only) {
 }
 
 void usb_teardown(void) {
+  // Wait for transfers to finish. This works around an issue wherein we
+  // disconnect while there are still pipelined transfers going.
+  // This prevents Windows error 0x800701B1 when copying UF2 firmware.
+  // See: https://github.com/adafruit/Adafruit_nRF52_Bootloader/issues/120
+  unsigned int i;
+  for (i = 0; i < 100; i++) {
+    tud_task();
+    NRFX_DELAY_MS(1);
+  }
+
   // Simulate an disconnect which cause pullup disable, USB perpheral disable and hclk disable
   tusb_hal_nrf_power_event(NRFX_POWER_USB_EVT_REMOVED);
 }
