@@ -62,6 +62,6 @@
 #define UF2_PRODUCT_NAME      "SlimeVR smol P3R6"
 #define UF2_VOLUME_LABEL      "SLIMENRF"
 #define UF2_BOARD_ID          "slimevr-smol-p3r6"
-#define UF2_INDEX_URL         "https://docs.shinebright.dev/diy/smol-slime.html"
+#define UF2_INDEX_URL         "https://docs.slimevr.dev/smol-slimes/index.html"
 
 #endif

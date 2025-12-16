@@ -62,6 +62,6 @@
 #define UF2_PRODUCT_NAME      "SlimeVR NRF Mini P2"
 #define UF2_VOLUME_LABEL      "SLIMENRF"
 #define UF2_BOARD_ID          "slimevr-mini-p2"
-#define UF2_INDEX_URL         "https://www.adafruit.com/product/4062" // TODO change later
+#define UF2_INDEX_URL         "https://docs.slimevr.dev/smol-slimes/index.html"
 
 #endif
