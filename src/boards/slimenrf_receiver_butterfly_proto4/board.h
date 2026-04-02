@@ -41,9 +41,12 @@
 /*------------------------------------------------------------------*/
 /* LED
  *------------------------------------------------------------------*/
-#define LEDS_NUMBER           1 // I lied. There is only NeoPixel and I don't think this can use it
-#define LED_PRIMARY_PIN       _PINNUM(0, 1)
+#define LEDS_NUMBER           0
 #define LED_STATE_ON          0
+
+#define LED_NEOPIXEL         PINNUM(0, 14)
+#define NEOPIXELS_NUMBER     1
+#define BOARD_RGB_BRIGHTNESS 0x040404
 
 /*------------------------------------------------------------------*/
 /* BUTTON
