@@ -13,7 +13,7 @@
 # - DEFAULT_TO_OTA_DFU : if entering DFU, by default enter OTA DFU instead of Serial DFU
 #------------------------------------------------------------------------------
 
-PYTHON = python
+PYTHON = python3
 
 # local customization
 -include Makefile.user
