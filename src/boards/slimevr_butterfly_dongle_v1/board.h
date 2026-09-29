@@ -22,34 +22,45 @@
  * THE SOFTWARE.
  */
 
-#ifndef _SLIMEVR_BUTTERFLY_V1_H
-#define _SLIMEVR_BUTTERFLY_V1_H
+#ifndef _SLIMEVR_BUTTERFLY_DONGLE_V1_H
+#define _SLIMEVR_BUTTERFLY_DONGLE_V1_H
 
 #define _PINNUM(port, pin)    ((port)*32 + (pin))
 
-#define ENABLE_DCDC_1         1
+/*------------------------------------------------------------------*/
+/* DC/DC -- These are here for my own sanity. Do not enable or your shit will be fucked
+ *------------------------------------------------------------------*/
+#define ENABLE_DCDC_1         0
+#define ENABLE_DCDC_0         0
+
+/*------------------------------------------------------------------*/
+/*                      LDO Voltage                               
+ *------------------------------------------------------------------*/
+#define UICR_REGOUT0_VALUE UICR_REGOUT0_VOUT_3V3
 
 /*------------------------------------------------------------------*/
 /* LED
  *------------------------------------------------------------------*/
-#define LEDS_NUMBER           3
-#define LED_PRIMARY_PIN       _PINNUM(0, 4) // R
-#define LED_SECONDARY_PIN     _PINNUM(1, 9) // B
-#define LED_STATE_ON          1
+#define LEDS_NUMBER           0
+#define LED_STATE_ON          0
+
+#define LED_NEOPIXEL         _PINNUM(0, 15)
+#define NEOPIXELS_NUMBER     1
+#define BOARD_RGB_BRIGHTNESS 0x040404
 
 /*------------------------------------------------------------------*/
 /* BUTTON
  *------------------------------------------------------------------*/
 #define BUTTONS_NUMBER        2
-#define BUTTON_1              _PINNUM(0, 18) // unusable: RESET
-#define BUTTON_2              _PINNUM(0, 11) // SW0
+#define BUTTON_1              _PINNUM(0, 17) 
+#define BUTTON_2              _PINNUM(0, 18) // unusable: RESET
 #define BUTTON_PULL           NRF_GPIO_PIN_PULLUP
 
 //--------------------------------------------------------------------+
 // BLE OTA
 //--------------------------------------------------------------------+
 #define BLEDIS_MANUFACTURER   "SlimeVR"
-#define BLEDIS_MODEL          "SlimeVR Butterfly Tracker"
+#define BLEDIS_MODEL          "SlimeVR Butterfly Dongle"
 
 //--------------------------------------------------------------------+
 // USB
@@ -59,9 +70,9 @@
 #define USB_DESC_CDC_ONLY_PID  0x7693
 
 //------------- UF2 -------------//
-#define UF2_PRODUCT_NAME      "SlimeVR Butterfly Tracker V1"
-#define UF2_VOLUME_LABEL      "SLIMEVR-BTF"
-#define UF2_BOARD_ID          "slimevr-butterfly-v1"
+#define UF2_PRODUCT_NAME      "SlimeVR Butterfly Dongle V1"
+#define UF2_VOLUME_LABEL      "SLIMEVR-BTF-DG"
+#define UF2_BOARD_ID          "slimevr-dongle-v1"
 #define UF2_INDEX_URL         "https://slimevr.dev/bf_manual"
 
 #endif
