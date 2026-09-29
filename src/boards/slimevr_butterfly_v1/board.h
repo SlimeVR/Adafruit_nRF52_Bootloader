@@ -48,8 +48,8 @@
 //--------------------------------------------------------------------+
 // BLE OTA
 //--------------------------------------------------------------------+
-#define BLEDIS_MANUFACTURER   "Nighty Industries"
-#define BLEDIS_MODEL          "SlimeVR Butterfly v1"
+#define BLEDIS_MANUFACTURER   "SlimeVR"
+#define BLEDIS_MODEL          "SlimeVR Butterfly Tracker"
 
 //--------------------------------------------------------------------+
 // USB
@@ -59,9 +59,9 @@
 #define USB_DESC_CDC_ONLY_PID  0x7693
 
 //------------- UF2 -------------//
-#define UF2_PRODUCT_NAME      "SlimeVR Butterfly v1"
-#define UF2_VOLUME_LABEL      "SLIMENRF"
+#define UF2_PRODUCT_NAME      "SlimeVR Butterfly Tracker V1"
+#define UF2_VOLUME_LABEL      "SLIMEVR-BTF"
 #define UF2_BOARD_ID          "slimevr-butterfly-v1"
-#define UF2_INDEX_URL         "https://docs.slimevr.dev/smol-slimes/index.html"
+#define UF2_INDEX_URL         "https://slimevr.dev/bf_manual"
 
 #endif
