@@ -254,6 +254,8 @@ void uf2_init(void)
 {
   strcat(infoUf2File, "SoftDevice: ");
 
+  char str[13];
+
   if ( is_sd_existed() )
   {
     uint32_t const sd_id      = SD_ID_GET(MBR_SIZE);
@@ -264,7 +266,6 @@ void uf2_init(void)
     ver[1] = (sd_version - ver[0]*1000000)/1000;
     ver[2] = (sd_version - ver[0]*1000000 - ver[1]*1000);
 
-    char str[10];
     utoa(sd_id, str, 10);
 
     strcat(infoUf2File, "S");
@@ -286,6 +287,19 @@ void uf2_init(void)
   {
     strcat(infoUf2File, "not found\r\n");
   }
+
+  uint64_t hwid = *(uint64_t *)NRF_FICR->DEVICEADDR & 0xFFFFFFFFFFFF;
+
+  for ( int i = 11; i >= 0; --i )
+  {
+    str[i] = "0123456789ABCDEF"[hwid & 0xF];
+    hwid >>= 4;
+  }
+  str[12] = 0;
+
+  strcat(infoUf2File, "HWID: ");
+  strcat(infoUf2File, str);
+  strcat(infoUf2File, "\r\n");
 }
 
 /*------------------------------------------------------------------*/
