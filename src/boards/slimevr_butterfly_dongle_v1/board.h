@@ -71,7 +71,7 @@
 
 //------------- UF2 -------------//
 #define UF2_PRODUCT_NAME      "SlimeVR Butterfly Dongle V1"
-#define UF2_VOLUME_LABEL      "SLIMEVR-BTF-DG"
+#define UF2_VOLUME_LABEL      "SLIMEVR-DG"
 #define UF2_BOARD_ID          "slimevr-dongle-v1"
 #define UF2_INDEX_URL         "https://slimevr.dev/bf_manual"
 
