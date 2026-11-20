@@ -174,22 +174,23 @@ static void wait_for_events(void)
 
 bool bootloader_app_is_valid(void)
 {
+  bool success = false;
   uint32_t const app_addr = DFU_BANK_0_REGION_START;
-  uint32_t const sp_addr = *((uint32_t*)app_addr);
-  uint32_t const reset_addr = *((uint32_t*)(app_addr + 4));
+
+  bootloader_settings_t const *p_bootloader_settings;
+  bootloader_util_settings_get(&p_bootloader_settings);
 
   enum { EMPTY_FLASH = 0xFFFFFFFFUL };
 
-  if (sp_addr == EMPTY_FLASH && reset_addr == EMPTY_FLASH)
+  // Application is invalid if first 2 words are all 0xFFFFFFF
+  if ( *((uint32_t *)app_addr    ) == EMPTY_FLASH &&
+       *((uint32_t *)(app_addr+4)) == EMPTY_FLASH )
   {
     return false;
   }
 
-  bootloader_settings_t const * p_bootloader_settings;
-  bootloader_util_settings_get(&p_bootloader_settings);
-
-  // Primary path: a prior DFU flagged bank 0 as valid.
-  if (p_bootloader_settings->bank_0 == BANK_VALID_APP)
+  // The application in CODE region 1 is flagged as valid during update.
+  if ( p_bootloader_settings->bank_0 == BANK_VALID_APP )
   {
     uint16_t image_crc = 0;
 
@@ -201,26 +202,10 @@ bool bootloader_app_is_valid(void)
                                 NULL);
     }
 
-    return (image_crc == p_bootloader_settings->bank_0_crc);
+    success = (image_crc == p_bootloader_settings->bank_0_crc);
   }
 
-  // Fallback for debugger-flashed apps: settings page is erased (bank_0 = 0xFFFF)
-  // but an app may still have been written to bank 0 directly. Accept it if its
-  // Cortex-M vector table is plausible: initial SP within RAM, reset vector
-  // within app flash region with the Thumb bit set. The SP upper bound is
-  // inclusive because the empty-descending stack initializes one past RAM end.
-  if (p_bootloader_settings->bank_0 == 0xFFFF)
-  {
-    uint32_t const ram_start = 0x20000000UL;
-    uint32_t const ram_end = ram_start + (NRF_FICR->INFO.RAM << 10u);
-    bool const sp_valid = (sp_addr >= ram_start) && (sp_addr <= ram_end) && ((sp_addr & 3U) == 0);
-    bool const reset_in_app = (reset_addr & 1U) &&
-      (reset_addr >= app_addr) &&
-      (reset_addr < BOOTLOADER_REGION_START);
-    return sp_valid && reset_in_app;
-  }
-
-  return false;
+  return success;
 }
 
 
