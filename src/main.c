@@ -174,6 +174,12 @@ int main(void) {
   // TODO move to CF2
   BOOTLOADER_VERSION_REGISTER = (MK_BOOTLOADER_VERSION);
 
+  // slime: go to app immediately
+  if (NRF_POWER->GPREGRET == DFU_MAGIC_SKIP) {
+    NRF_POWER->GPREGRET = 0;
+    bootloader_app_start();
+  }
+
   board_init();
   bootloader_init();
   PRINTF("Bootloader Start\r\n");
@@ -224,7 +230,10 @@ int main(void) {
 
     // start application
     PRINTF("Starting app...\r\n");
-    bootloader_app_start();
+
+    // slime: force a soft reset before booting to app
+    NRF_POWER->GPREGRET = DFU_MAGIC_SKIP;
+    NVIC_SystemReset();
   }
 
   // No application was loaded or we need to reenter the bootloader
