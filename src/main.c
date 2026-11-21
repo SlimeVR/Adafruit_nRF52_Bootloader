@@ -108,11 +108,9 @@ extern void tusb_hal_nrf_power_event(uint32_t event);
 #define DFU_MAGIC_SERIAL_ONLY_RESET     0x4e
 #define DFU_MAGIC_UF2_RESET             0x57
 #define DFU_MAGIC_SKIP                  0x6d
+#define DFU_DBL_RESET_MAGIC             0x5a
 
-#define DFU_DBL_RESET_MAGIC             0x5A1AD5      // SALADS
-#define DFU_DBL_RESET_APP               0x4ee5677e
 #define DFU_DBL_RESET_DELAY             500
-#define DFU_DBL_RESET_MEM               0x20007F7C
 
 #define BOOTLOADER_VERSION_REGISTER     NRF_TIMER2->CC[0]
 #define DFU_SERIAL_STARTUP_INTERVAL     1000
@@ -129,7 +127,6 @@ extern void tusb_hal_nrf_power_event(uint32_t event);
 //--------------------------------------------------------------------+
 //
 //--------------------------------------------------------------------+
-uint32_t* dbl_reset_mem = ((uint32_t*) DFU_DBL_RESET_MEM);
 
 // true if ble, false if serial
 bool _ota_dfu = false;
@@ -225,9 +222,6 @@ int main(void) {
       disable_softdevice();
     }
 
-    // clear in case we kept DFU_DBL_RESET_APP there
-    (*dbl_reset_mem) = 0;
-
     // start application
     PRINTF("Starting app...\r\n");
 
@@ -260,17 +254,16 @@ static void check_dfu_mode(void) {
   bool const serial_only_dfu = (gpregret == DFU_MAGIC_SERIAL_ONLY_RESET);
   bool const uf2_dfu         = (gpregret == DFU_MAGIC_UF2_RESET);
   bool const dfu_skip        = (gpregret == DFU_MAGIC_SKIP);
+  bool const dbl_reset       = (gpregret == DFU_DBL_RESET_MAGIC);
 
   bool const reason_reset_pin = (NRF_POWER->RESETREAS & POWER_RESETREAS_RESETPIN_Msk) ? true : false;
 
   // start either serial, uf2 or ble
   bool dfu_start = _ota_dfu || serial_only_dfu || uf2_dfu ||
-                   (((*dbl_reset_mem) == DFU_DBL_RESET_MAGIC) && reason_reset_pin);
+                   (dbl_reset && reason_reset_pin);
 
-  // Clear GPREGRET if it is our values
-  if (dfu_start || dfu_skip) {
-    NRF_POWER->GPREGRET = 0;
-  }
+  // Clear GPREGRET
+  NRF_POWER->GPREGRET = 0;
 
   // skip dfu entirely
   if (dfu_skip) {
@@ -289,9 +282,8 @@ static void check_dfu_mode(void) {
 #endif
 
   bool const valid_app = bootloader_app_is_valid();
-  bool const just_start_app = valid_app && !dfu_start && (*dbl_reset_mem) == DFU_DBL_RESET_APP;
 
-  if (!just_start_app && APP_ASKS_FOR_SINGLE_TAP_RESET()) {
+  if (APP_ASKS_FOR_SINGLE_TAP_RESET()) {
     dfu_start = 1;
   }
 
@@ -306,7 +298,7 @@ static void check_dfu_mode(void) {
 #endif
 
   // App mode: Double Reset detection or DFU startup for nrf52832
-  if (!(just_start_app || dfu_start || !valid_app)) {
+  if (!(dfu_start || !valid_app)) {
 #ifdef NRF52832_XXAA
     /* Even DFU is not active, we still force an 1000 ms dfu serial mode when startup
      * to support auto programming from Arduino IDE
@@ -316,18 +308,12 @@ static void check_dfu_mode(void) {
     // Note: RESETREAS is not clear by bootloader, it should be cleared by application upon init()
     if (reason_reset_pin) {
       // Register our first reset for double reset detection
-      (*dbl_reset_mem) = DFU_DBL_RESET_MAGIC;
+      NRF_POWER->GPREGRET = DFU_DBL_RESET_MAGIC;
 
       // if RST is pressed during this delay (double reset)--> if will enter dfu
       NRFX_DELAY_MS(DFU_DBL_RESET_DELAY);
     }
 #endif
-  }
-
-  if (APP_ASKS_FOR_SINGLE_TAP_RESET()) {
-    (*dbl_reset_mem) = DFU_DBL_RESET_APP;
-  } else {
-    (*dbl_reset_mem) = 0;
   }
 
   // Enter DFU mode accordingly to input
