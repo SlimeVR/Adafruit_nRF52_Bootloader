@@ -114,7 +114,6 @@ extern void tusb_hal_nrf_power_event(uint32_t event);
 #define DFU_DBL_RESET_DELAY             500
 #define DFU_DBL_RESET_MEM               0x20007F7C
 
-#define BOOTLOADER_VERSION_REGISTER     NRF_TIMER2->CC[0]
 #define DFU_SERIAL_STARTUP_INTERVAL     1000
 
 // Allow for using reset button essentially to swap between application and bootloader.
@@ -169,10 +168,6 @@ int main(void) {
   // MBR_BOOTLOADER_ADDR/MBR_PARAM_PAGE_ADDR are used if available, else UICR registers are used
   // Note: skip it for now since this will prevent us to change the size of bootloader in the future
   // bootloader_mbr_addrs_populate();
-
-  // Save bootloader version to pre-defined register, retrieved by application
-  // TODO move to CF2
-  BOOTLOADER_VERSION_REGISTER = (MK_BOOTLOADER_VERSION);
 
   // slime: go to app immediately
   if (NRF_POWER->GPREGRET == DFU_MAGIC_SKIP) {
